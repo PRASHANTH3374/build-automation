@@ -1,0 +1,56 @@
+#! /bin/bash
+echo "installation of ansible in centos or rhel"
+sudo yum -y update
+sudo yum install -y epel-release
+sudo yum install -y ansible
+cd /etc/ansible
+sudo chown ec2-user:ec2-user /etc/ansible
+sudo chown ec2-user:ec2-user /etc/ansible/ansible.cfg
+sudo chown ec2-user:ec2-user /etc/ansible/hosts
+sudo chown ec2-user:ec2-user /etc/ansible/roles
+sudo touch ans.pem
+sudo chmod 700 ans.pem
+sudo echo '-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA6wkM9dB6eFmHcReIHtX4fdYOywLMWrVycIUdTyyTkqYHJO14StOX6bWP6Xo5
+m9ee5VYoCjuRryN0BomGv+vpFWj4J08te0/Phy98FdGSEzG5E7hsXccz9oclDDYwfb/9f0Fq+1hD
+5VeM+xSVYHYa0puvy8EBTEgixp5sgUR6sJKcmEy78ZNCNysQRmFr1kf86rDJAxszoJlRWHbeFjDu
+oT5vyeEVe7VnqqLqO7dr9b6dOZwKZih5//oOGcV5B5egM1gmf5sT3eVxRv61x/rJlUcu2K+jRVqw
+cDv03bmniXicjqurZ3q5/8rxNNrmguk0ambTG1oUQR9BmiQKY0NxOwIDAQABAoIBAQCziZBa3cwP
+zuQFYaJbW7ub9D4MmbCcweoPRb/j0PtRlH30mWnATu3GWyj5gqIrB4SbTzr6xhI9JOnmbHuAc6by
+8eJNtM/bWFYAwCcbS6E4BE2KYOB2qkppUUbdky9rf5MW+FPOd9g1grFwwoJw0wceRkr9bAufx6K4
+8h+Uh0jpQz6V4teQyXmPZ0qzCbLgSvCkeDjPxPnD+wC6h1dBDMo7MxVJ8S1Fs9dQ3OEVvPucw7rY
+aUfS7NBg/yoMuWm5+H/yvJsoRAjRAAOC2B6F033I+HfumHyVZhiaYktyP6Fb0NrS6aYmO289UunJ
+Jc8Mf3P1e0h/hn4mminMGrW5OLcBAoGBAPZvYYrC/vcqFJkhNO7/NQI6smQ0mVp4P3cW096HxNPl
+sD5DYZVBSyqdWbaf1hyNZhxTqFs7baB4TRKpk+ceRnOiXRoGiKDn5mVkBqucoEXBHmaX+WBxfGF3
+xQV5Zw1eKl0aYAJiz7+EaIKVigzpmDJzPK40eOc3Z0gtVIUxuU97AoGBAPQoZmnk8o58TjQqMX/e
+EhBxqf3MEv8q7KGj7l1O49Q++uBtgAbI1b4rDoHdfO6wa8YV2ITv8KOFPnNAechin0UylwQPxpZn
+TOzCruMPdBCVwDvl2a60uQUI6m7fZIhgX8YzTGv+ECuUVp/GRhRiSnhXh8FAwy5M8PLblIJxVdlB
+AoGAPfrneoHupHV19smOSanwSB5BLci45TMnKymXofldvLmhKRfDXEmuwQoQPUlYDZhWnTtBNajt
+upVnNRFnfJJ1v7GPXvNTu7x3ivqsXs8m1ERtA/qnIuWIFe+MowLUs10CpKX0jcUSYSXJL0azEOpT
+eCTZlyrlWanqlRGpl1JZPC8CgYB8NUFEhdBPZDV0nDJqVlLiQrC0CGlxniibYoYUudl1VETUf2Au
+E2WJROYwcrjnxKBPOTXZCydkSJiokRhjNKjJzx68Vjo0sYCUwcWuhWIKPeR5lEjVc+LcCNkaZlMC
+feS7M8Wg+rLHOMOIrJliLU6tQfox+fxRRZseMU6vvXBrAQKBgQCRLBZIdVzgxtrIe2T5ZJFJPeDC
+16HlHm+1wO1txK+hVhBa28BiFKzMnpPfIFclJBz4XpLAzZrxJH9r4AWTBoewkAHRWMZSTeTv1Ec/
+gs4Lro82Om7BPPzFO5X2XpfFevfexA+Ayes4nBEG5f4vnAOmfVbI8oXZfnG4JRNLhrYDKQ==
+-----END RSA PRIVATE KEY-----' >> ans.pem
+sudo sed -i '/inventory/s/^#//g' ansible.cfg
+sudo sed -i '/private_key_file/s/^#//g' ansible.cfg
+sudo sed -i '/become_user/s/^#//g' ansible.cfg
+sudo sed -i '+s+private_key_file = /path/to/file+private_key_file = ans.pem+g' ansible.cfg
+sudo sed -i '+s+become_user=root+become_user=ec2-user+g' ansible.cfg
+echo "appending client servers name as web"
+echo '[web]' >> /etc/ansible/hosts
+echo "enter 2 client ip adreses"
+ip=2
+for (( i=0; i<ip; i++ ))
+do
+read a
+echo $a >> /etc/ansible/hosts
+cat hosts
+ansible web -m ping
+done
+
+
+
+
+

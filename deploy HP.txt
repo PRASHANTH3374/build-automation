@@ -1,0 +1,11 @@
+#! /bin/bash
+echo "enter job name"
+read job
+read file
+if [ -e $file ]
+then 
+cd /var/lib/jenkins/workspace/hello/target/                            //go to the jenkins target folder in jenkins//
+sudo mv $file /opt/apache-tomcat-7.0.94/webapps/
+else
+echo "file not found in target folder"
+fi                                                

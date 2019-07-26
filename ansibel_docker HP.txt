@@ -1,0 +1,31 @@
+#! /bin/bash
+echo "installation of ansible in centos or rhel"
+yum update
+yum install -y epel-release
+yum install -y ansible
+cd /etc/ansible
+chown ec2-user:ec2-user /etc/ansible
+chown ec2-user:ec2-user /etc/ansible/ansible.cfg
+chown ec2-user:ec2-user /etc/ansible/hosts
+chown ec2-user:ec2-user /etc/ansible/roles
+echo "enter the ssh-key name as nidhi"
+ssh-keygen
+chmod 700 nidhi.pub
+sed -i '/inventory/s/^#//g' ansible.cfg
+sed -i '/private_key_file/s/^#//g' ansible.cfg
+sed -i '/become_user/s/^#//g' ansible.cfg
+sed -i '+s+private_key_file = /path/to/file+private_key_file = nidhi.pub+g' ansible.cfg
+sed -i '+s+become_user=root+become_user=ec2-user+g' ansible.cfg
+echo "appending client servers name as web"
+echo '[web]' >> /etc/ansible/hosts
+echo "enter 2 client ip adreses"
+ip=2
+for (( i=0; i<ip; i++ ))
+do
+read a
+echo $a >> /etc/ansible/hosts
+cat hosts
+ssh-copy-id -i /etc/ansible/nidhi.pub ec2-user@$ip
+ansible web -m ping
+done
+

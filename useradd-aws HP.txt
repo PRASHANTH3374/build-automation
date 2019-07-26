@@ -1,0 +1,11 @@
+       users
+      cat /etc/passwd
+      useradd ansadmin
+      clear
+      passwd ansadmin
+     visudo
+     clear
+     vi /etc/ssh/sshd_config
+     service sshd restart
+     hostname
+     hostname ansible-master
